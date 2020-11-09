@@ -15,14 +15,25 @@
            {{tab.name}}
       </div>
     </div>
+    <div style="margin: 20px 50px">
+      <KckInput v-model="inputValue"/>
+      <KckInput v-model="inputValue" header="Something"/>
+      <KckInput v-model="inputValue" header="Something" disabled errorMessage="Sum Ting Wong"/>
+      <KckInput v-model="inputValue" header="Something" disabled="true"/>
+      <KckInput v-model="inputValue" showError/>
+      <KckInput v-model="inputValue" header="Something" errorMessage="Sum Ting Wong" showError="true"/>
+    </div>
   </div>
 </template>
 
 <script>
+import KckInput from "./KckInput.vue";
+
 export default {
   name: "Tabs",
   props: {
   },
+  components: {KckInput},
   data() {
     const tabs = [
       {
@@ -39,6 +50,7 @@ export default {
       },
     ];
     return {
+      inputValue: "",
       tabs,
       currentTab: tabs[0]
     }
