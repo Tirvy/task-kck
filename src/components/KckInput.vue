@@ -1,11 +1,13 @@
 <template>
-  <div class="kck-input-container">
+  <div class="kck-input-container" :class="{error: errorMessage}">
     <div class="input-header" :class="{disabled: disabled}">
       {{header}}
     </div>
-    <input class="input-field" v-bind="$attrs" v-on="$listeners" :class="{error: showError}" :disabled="disabled"/>
-    <div class="error-message" :class="{show: showError}">
-      {{errorMessage}}
+    <slot>
+      <input class="input-field" v-bind="$attrs" v-on="$listeners" :disabled="disabled"/>
+    </slot>
+    <div class="error-message">
+      {{errorMessage || "место под ошибку"}}
     </div>
   </div>
 </template>
@@ -17,25 +19,14 @@ export default {
     header: String,
     errorMessage: {
       type: String,
-      default: 'Некорректные данные'
+      default: ''
     },
-    showError: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {
     }
   },
   methods: {
-    setActiveTab(tab) {
-      this.currentTab = tab;
-    },
     setValue(value) {
       this.$emit('input', value);
     }
@@ -44,6 +35,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 
 .kck-input-container {
   display: flex;
@@ -66,6 +58,7 @@ export default {
   padding: 20px 15px;
   margin-top: 7px;
   margin-bottom: 7px;
+  resize: none;
 
   &:hover,
   &.hover {
@@ -76,11 +69,6 @@ export default {
   &.active,
   &:focus {
     border-color: #8288a2;
-  }
-
-  &_error,
-  &.error {
-    border-color: #ff1e38;
   }
 
   &_disabled,
@@ -99,8 +87,14 @@ export default {
   font-size: 14px;
 
   visibility: hidden;
+}
 
-  &.show {
+.error {
+  & .input-field {
+    border-color: #ff1e38;
+  }
+
+  & .show {
     visibility: visible;
   }
 }
