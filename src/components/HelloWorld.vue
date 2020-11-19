@@ -7,62 +7,62 @@
       <div class="button button_disabled">Button 3</div>
     </div>
     <div class="tab-header-row">
-      <div v-for="tab in tabs"
-           :key="tab.name"
-           class="tab-header"
-           :class="{'tab-header_active': tab === currentTab}"
-           @click="setActiveTab(tab)">
-           {{tab.name}}
+      <div
+        v-for="tab in tabs"
+        :key="tab.name"
+        class="tab-header"
+        :class="{'tab-header_active': tab === currentTab}"
+        @click="setActiveTab(tab)"
+      >
+        {{ tab.name }}
       </div>
     </div>
     <div style="margin: 20px 50px">
-      <KckInput v-model="inputValue"/>
-      <KckInput v-model="inputValue" header="Something"/>
-      <KckInput v-model="inputValue" header="Something" disabled errorMessage="Sum Ting Wong"/>
-      <KckInput v-model="inputValue" header="Something" disabled="true"/>
-      <KckInput v-model="inputValue" showError/>
-      <KckInput v-model="inputValue" header="Something" errorMessage="Sum Ting Wong" showError="true"/>
+      <KckInput v-model="inputValue" />
+      <KckInput v-model="inputValue" header="Something" />
+      <KckInput v-model="inputValue" header="Something" disabled errorMessage="Sum Ting Wong" />
+      <KckInput v-model="inputValue" header="Something" disabled="true" />
+      <KckInput v-model="inputValue" showError />
+      <KckInput v-model="inputValue" header="Something" errorMessage="Sum Ting Wong" showError="true" />
     </div>
   </div>
 </template>
 
 <script>
-import KckInput from "./KckInput.vue";
+import KckInput from './KckInput.vue';
 
 export default {
-  name: "Tabs",
-  props: {
-  },
+  name: 'Tabs',
+  props: {},
   components: {KckInput},
   data() {
     const tabs = [
       {
-        name: 'tab1'
+        name: 'tab1',
       },
       {
-        name: 'tab2'
+        name: 'tab2',
       },
       {
-        name: 'the tab 32'
+        name: 'the tab 32',
       },
       {
-        name: 'tab5'
+        name: 'tab5',
       },
     ];
     return {
-      inputValue: "",
+      inputValue: '',
       tabs,
-      currentTab: tabs[0]
-    }
+      currentTab: tabs[0],
+    };
   },
   methods: {
     setActiveTab(tab) {
       this.currentTab = tab;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
