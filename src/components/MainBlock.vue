@@ -37,8 +37,8 @@
 
 <script>
 import Mask from '../common/mask.js';
-import TabShip from './TabShip.vue';
-import TabTake from './TabTake.vue';
+let TabShip = () => import('./TabShip.vue');
+let TabTake = () => import('./TabTake.vue');
 import CommonMixin from '@/common/mixin';
 
 export default {

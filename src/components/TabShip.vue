@@ -83,11 +83,7 @@ export default {
         }
       }
       if (this.touched.phone) {
-        if (
-          !this.values.phone ||
-          this.values.phone.length < 11 ||
-          this.values.phone.match(/\d/g).length !== 11
-        ) {
+        if (!this.values.phone || this.values.phone.length < 11 || this.values.phone.match(/\d/g).length !== 11) {
           ret.phone = 'Введите корректный телефон';
         }
       }
