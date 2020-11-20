@@ -1,8 +1,13 @@
 <template>
-  <div class="tab-content tab-content_ship">
+  <div class="tab-content tab-content_ship" :class="devicePlatform">
     <div class="tab-content__inner">
-      <div class="flex-between">
-        <KckInput header="ФИО" :errorMessage="errorMessages.name" class="content-field">
+      <div :class="devicePlatform === 'desktop' ? 'flex-between' : ''">
+        <KckInput
+          header="ФИО"
+          :errorMessage="errorMessages.name"
+          class="content-field"
+          :class="{margin_right: devicePlatform === 'desktop'}"
+        >
           <input
             class="input-field"
             v-model="values.name"
@@ -26,7 +31,12 @@
         <input class="input-field" v-model="values.address" placeholder="Город, улица, дом" @blur="touch('address')" />
       </KckInput>
       <KckInput header="Комментарий" :errorMessage="errorMessages.comment">
-        <textarea class="input-field" v-model="values.comment" rows="3" @blur="touch('comment')"> </textarea>
+        <textarea
+          class="input-field"
+          v-model="values.comment"
+          :rows="devicePlatform === 'desktop' ? 3 : 6"
+          @blur="touch('comment')"
+        ></textarea>
       </KckInput>
 
       <div class="flex-end">
@@ -66,11 +76,18 @@ export default {
   computed: {
     errorMessages() {
       let ret = {};
-      if (this.touched.name && !this.values.name) {
-        ret.name = 'Обязательное поле';
+      if (this.touched.name) {
+        const letters = this.values.name.replace(/[\s-]/g, '');
+        if (!letters || !letters.length) {
+          ret.name = 'Обязательное поле';
+        }
       }
       if (this.touched.phone) {
-        if (!this.values.phone || this.values.phone.length < 11) {
+        if (
+          !this.values.phone ||
+          this.values.phone.length < 11 ||
+          this.values.phone.match(/\d/g).length !== 11
+        ) {
           ret.phone = 'Введите корректный телефон';
         }
       }
@@ -103,7 +120,9 @@ export default {
     checkName() {
       let value = /[А-Яа-яЁё -]+/.exec(this.values.name);
       this.$nextTick(() => {
-        this.values.name = value;
+        if (value && value[0]) {
+          this.values.name = value[0];
+        }
       });
     },
   },
@@ -113,8 +132,5 @@ export default {
 <style scoped lang="scss">
 .content-field {
   flex: 1 0;
-  &:first-child {
-    margin-right: 16px;
-  }
 }
 </style>

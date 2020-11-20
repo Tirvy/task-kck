@@ -1,17 +1,19 @@
 <template>
   <div>
-    <div class="tab-content tab-content_ship">
-      <div class="tab-content__inner flex-between">
+    <div class="tab-content tab-content_ship" :class="devicePlatform">
+      <div class="tab-content__inner" :class="devicePlatform === 'desktop' ? 'radio_horizontal' : ''">
         <div class="radio-item" v-for="option in takeOptions" :key="option.id">
           <KckRadio :value="selectedOption === option.id" @select="selectOption(option)">
-            {{ option.name }}
+            <div :class="devicePlatform" class="option-name">
+              {{ option.name }}
+            </div>
           </KckRadio>
         </div>
       </div>
     </div>
-    <div id="ya-karto"></div>
+    <div id="ya-karto" :class="devicePlatform"></div>
     <div class="tab-content">
-      <div class="tab-content__inner flex-end">
+      <div class="tab-content__inner flex-end" :class="{'mobile-map-row': devicePlatform === 'mobile'}">
         <div class="button" :class="{disabled: !this.canSend}">
           Отправить
         </div>
@@ -45,10 +47,17 @@ export default {
       ],
       selectedOption: null,
       ymaps: null,
+      map: null,
     };
   },
   mounted() {
     this.waitYmaps();
+  },
+  beforeUnmount() {
+    if (this.map) {
+      this.map.destroy();
+      this.map = null;
+    }
   },
   computed: {
     canSend() {
@@ -95,6 +104,7 @@ export default {
           );
         },
       };
+
       let zoomControl = new this.ymaps.control.ZoomControl({
         options: {
           position: {
@@ -105,21 +115,21 @@ export default {
         },
       });
 
-      let myMap = new this.ymaps.Map(
+      this.map = new this.ymaps.Map(
         'ya-karto',
         {
           center: [55.753994, 37.622093],
-          zoom: 11,
+          zoom: this.devicePlatform === 'desktop' ? 11 : 10,
           controls: [],
         },
         {
           searchControlProvider: 'yandex#search',
         }
       );
-      myMap.controls.add(zoomControl);
+      this.map.controls.add(zoomControl);
 
       this.takeOptions.forEach(({coords}) => {
-        myMap.geoObjects.add(
+        this.map.geoObjects.add(
           new this.ymaps.Placemark([coords.y, coords.x], null, {
             iconLayout: 'default#image',
             iconImageHref: LocImg,
@@ -130,24 +140,50 @@ export default {
         );
       });
       if (isMobile.any() || this.device_platform !== 'desktop') {
-        myMap.behaviors.disable('drag');
+        this.map.behaviors.disable('drag');
       }
-      myMap.behaviors.disable('scrollZoom');
+      this.map.behaviors.disable('scrollZoom');
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.radio_horizontal {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 .radio-item {
   flex: 1 0 50%;
 }
 
+.option-name {
+  text-align: left;
+  &.desktop {
+    white-space: nowrap;
+  }
+}
+
 #ya-karto {
-  height: 580px;
   width: calc(100vw - 16px);
   position: relative;
   left: 50%;
   transform: translate(-50%, 0px);
+
+  &.desktop {
+    height: 580px;
+  }
+
+  &.mobile {
+    height: 400px;
+  }
+}
+
+.mobile-map-row {
+  position: absolute;
+  transform: translate(-10px, -100%);
+  width: 100%;
 }
 </style>

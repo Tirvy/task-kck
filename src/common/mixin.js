@@ -10,12 +10,8 @@ export default {
     let handleResize = () => {
       const initial = [
         {
-          size: 1200,
-          key: 'desktop',
-        },
-        {
           size: 768,
-          key: 'tablet',
+          key: 'desktop',
         },
         {
           size: 0,
@@ -29,7 +25,7 @@ export default {
           break;
         }
       }
-      this.device_platform = width.key;
+      this.devicePlatform = width.key;
     };
     $(window).on('resize', handleResize);
     handleResize();

@@ -34,6 +34,7 @@ export default {
   display: flex;
   align-items: center;
   color: #000;
+  padding: 8px 0;
 
   &.disabled {
     color: #b8bed8;
@@ -76,6 +77,7 @@ export default {
   justify-content: center;
   align-items: center;
   margin-right: 16px;
+  flex-shrink: 0;
 
   &:after {
     content: ' ';

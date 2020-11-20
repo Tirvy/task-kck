@@ -1,21 +1,37 @@
 <template>
   <div class="whole-container">
-    <div class="title">
+    <div class="title" :class="devicePlatform">
       Выберите способ доставки
     </div>
-    <div class="tab-header-row">
-      <div
-        v-for="tab in tabsReversed"
-        :key="tab.name"
-        class="tab-header"
-        :class="{'tab-header_active': tab === currentTab}"
-        @click="setActiveTab(tab)"
-      >
-        {{ tab.name }}
+
+    <template v-if="devicePlatform === 'desktop'">
+      <div class="tab-header-row">
+        <div
+          v-for="tab in tabsReversed"
+          :key="tab.name"
+          class="tab-header"
+          :class="[{active: tab === currentTab}, devicePlatform]"
+          @click="setActiveTab(tab)"
+        >
+          {{ tab.name }}
+        </div>
       </div>
-    </div>
-    <TabShip v-if="currentTab.alias === 'ship'"></TabShip>
-    <TabTake v-else></TabTake>
+      <component :is="currentTab.component"></component>
+    </template>
+
+    <template v-else>
+      <template v-for="tab in tabs">
+        <div
+          class="tab-header_mobile"
+          :key="tab.id"
+          :class="[{active: tab === currentTab}, devicePlatform]"
+          @click="setActiveTab(tab)"
+        >
+          {{ tab.name }}
+        </div>
+        <component :is="tab.component" :key="tab.id" v-if="tab === currentTab"></component>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -35,10 +51,12 @@ export default {
       {
         name: 'Доставка',
         alias: 'ship',
+        component: TabShip,
       },
       {
         name: 'Самовывоз',
         alias: 'take',
+        component: TabTake,
       },
     ];
     return {
@@ -72,5 +90,9 @@ export default {
   text-align: left;
   padding-left: 32px;
   padding-bottom: 16px;
+
+  &.mobile {
+    padding-left: 16px;
+  }
 }
 </style>
