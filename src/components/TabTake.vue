@@ -1,28 +1,64 @@
 <template>
   <div>
     <div class="tab-content tab-content_ship">
-      <div class="tab-content__inner"></div>
+      <div class="tab-content__inner flex-between">
+        <div class="radio-item" v-for="option in takeOptions" :key="option.id">
+          <KckRadio :value="selectedOption === option.id" @select="selectOption(option)">
+            {{ option.name }}
+          </KckRadio>
+        </div>
+      </div>
     </div>
     <div id="ya-karto"></div>
+    <div class="tab-content">
+      <div class="tab-content__inner flex-end">
+        <div class="button" :class="{disabled: !this.canSend}">
+          Отправить
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import LocImg from '../assets/loc.png';
 import CommonMixin from '../common/mixin';
+import KckRadio from '@/components/KckRadio';
 
 export default {
   name: 'TabTake',
+  components: {KckRadio},
   mixins: [CommonMixin],
   data() {
     return {
+      takeOptions: [
+        {
+          id: 'pesok',
+          name: 'Пункт Выдачи заказов Песчаная улица, дом 13',
+          coords: {y: 55.801131, x: 37.508167},
+        },
+        {
+          id: 'sosna',
+          name: 'Пункт Выдачи заказов Подсосенский переулок, 11',
+          coords: {y: 55.757556, x: 37.651592},
+        },
+      ],
+      selectedOption: null,
       ymaps: null,
     };
   },
   mounted() {
     this.waitYmaps();
   },
+  computed: {
+    canSend() {
+      return !!this.selectedOption;
+    },
+  },
   methods: {
+    selectOption(option) {
+      this.selectedOption = option.id;
+    },
     waitYmaps() {
       if (!this.ymaps) {
         let script = document.createElement('script');
@@ -82,13 +118,9 @@ export default {
       );
       myMap.controls.add(zoomControl);
 
-      const shopCoords = [
-        {y: 55.801131, x: 37.508167},
-        {y: 55.757556, x: 37.651592},
-      ];
-      shopCoords.forEach(shopCoord => {
+      this.takeOptions.forEach(({coords}) => {
         myMap.geoObjects.add(
-          new this.ymaps.Placemark([shopCoord.y, shopCoord.x], null, {
+          new this.ymaps.Placemark([coords.y, coords.x], null, {
             iconLayout: 'default#image',
             iconImageHref: LocImg,
             iconImageSize: [39, 46],
@@ -107,11 +139,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.radio-item {
+  flex: 1 0 50%;
+}
+
 #ya-karto {
   height: 580px;
   width: calc(100vw - 16px);
-  position: absolute;
+  position: relative;
   left: 50%;
-  margin-left: calc(8px - 50%);
+  transform: translate(-50%, 0px);
 }
 </style>
