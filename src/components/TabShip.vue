@@ -115,7 +115,6 @@ export default {
     },
     checkName() {
       let value = /[А-Яа-яЁё -]+/.exec(this.values.name);
-      console.log(value);
       this.$nextTick(() => {
         if (value && value[0]) {
           this.values.name = value[0];
